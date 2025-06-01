@@ -2,7 +2,16 @@ package com.makelick.drinksy.cocktails.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -36,7 +45,7 @@ import com.makelick.drinksy.cocktails.data.Cocktail
 @Composable
 fun CocktailCard(
     cocktail: Cocktail,
-    onFavoriteClick: (Boolean) -> Unit,
+    onFavoriteClick: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier
 ) {
     var isFavorite by remember { mutableStateOf(cocktail.isFavorite) }
@@ -64,24 +73,26 @@ fun CocktailCard(
                     modifier = Modifier.fillMaxSize()
                 )
 
-                Box(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .align(Alignment.TopEnd)
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f))
-                        .clickable {
-                            isFavorite = !isFavorite
-                            onFavoriteClick(isFavorite)
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                        tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface
-                    )
+                if (onFavoriteClick != null) {
+                    Box(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .align(Alignment.TopEnd)
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f))
+                            .clickable {
+                                isFavorite = !isFavorite
+                                onFavoriteClick(isFavorite)
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+                            tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
 
@@ -108,7 +119,7 @@ fun CocktailCard(
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 RatingBar(
                     rating = cocktail.rating,
                     modifier = Modifier.padding(vertical = 4.dp)
@@ -129,7 +140,7 @@ fun RatingBar(
     Row(modifier = modifier) {
         for (i in 1..starCount) {
             val isFilled = i <= rating
-            val isHalfFilled = !isFilled && (i - 0.5f <= rating)
+//            val isHalfFilled = !isFilled && (i - 0.5f <= rating)
 
             Icon(
                 imageVector = if (isFilled) Icons.Default.Star else Icons.Default.StarBorder,
@@ -150,7 +161,7 @@ private fun CocktailCardPreview() {
         id = "1",
         name = "Mojito",
         description = "A refreshing Cuban cocktail with rum, lime, mint, and sugar",
-        imageUrl = "https://www.vkusnyblog.com/wp-content/uploads/2009/05/mohito.jpg",
+        imageUrl = "https://www.thecocktaildb.com/images/media/drink/sxpcj71487603345.jpg",
         ingredients = listOf("White rum", "Lime juice", "Sugar", "Mint", "Soda water"),
         instructions = "Muddle mint leaves with sugar and lime juice. Add rum and ice, top with soda water.",
         category = "Classics",

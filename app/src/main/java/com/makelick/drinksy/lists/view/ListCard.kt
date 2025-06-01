@@ -269,7 +269,7 @@ fun CocktailListCardPreview() {
         description = "Perfect cocktails for hot summer days",
         type = ListType.COMPILATION,
         cocktails = sampleCocktails,
-        creatorUserId = "user123",
+        creatorUser = "user123",
         isPublic = true
     )
 
@@ -324,7 +324,7 @@ fun MenuCocktailListCardPreview() {
         description = "Our special selection of signature drinks",
         type = ListType.MENU,
         cocktails = sampleCocktails,
-        creatorUserId = "user123",
+        creatorUser = "user123",
         isPublic = true
     )
 

@@ -59,6 +59,7 @@ fun ProfileScreen(
     navigateToFavorites: () -> Unit,
     navigateToMyLists: () -> Unit,
     navigateToMyReviews: () -> Unit,
+    navigateToLogin: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -128,6 +129,18 @@ fun ProfileScreen(
                 onDismiss = { isSelectingTastes = false }
             )
         }
+
+        Button(
+            onClick = {
+                viewModel.signOut()
+                navigateToLogin()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 32.dp)
+        ) {
+            Text("Sign Out")
+        }
     }
 }
 
@@ -153,7 +166,7 @@ fun ProfilePicture(
         if (profilePictureUri != null || profilePictureUrl.isNotEmpty()) {
             AsyncImage(
                 model = ImageRequest.Builder(context)
-                    .data(profilePictureUri)
+                    .data(profilePictureUri ?: profilePictureUrl)
                     .crossfade(true)
                     .build(),
                 contentDescription = "Profile Picture",

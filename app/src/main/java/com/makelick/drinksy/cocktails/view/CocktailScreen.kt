@@ -79,6 +79,7 @@ fun CocktailScreen(
     navigateToReviews: (String) -> Unit,
     navigateToLists: (String) -> Unit,
     onBackPressed: () -> Unit,
+    onShareCocktail: () -> Unit,
     viewModel: CocktailViewModel = hiltViewModel()
 ) {
     val cocktail by viewModel.cocktail.collectAsState()
@@ -117,6 +118,7 @@ fun CocktailScreen(
                 title = cocktail?.name ?: "Cocktail Details",
                 onBackPressed = onBackPressed,
                 onFavoriteToggle = { viewModel.toggleFavoriteStatus() },
+                onShareCocktail = onShareCocktail,
                 isFavorite = cocktail?.isFavorite ?: false
             )
         }
@@ -149,6 +151,7 @@ fun CocktailTopAppBar(
     title: String,
     onBackPressed: () -> Unit,
     onFavoriteToggle: () -> Unit,
+    onShareCocktail: () -> Unit,
     isFavorite: Boolean
 ) {
     TopAppBar(
@@ -175,7 +178,7 @@ fun CocktailTopAppBar(
                     tint = if (isFavorite) Color.Red else LocalContentColor.current
                 )
             }
-            IconButton(onClick = { /* Share cocktail */ }) {
+            IconButton(onClick = onShareCocktail) {
                 Icon(
                     imageVector = Icons.Default.Share,
                     contentDescription = "Share cocktail"

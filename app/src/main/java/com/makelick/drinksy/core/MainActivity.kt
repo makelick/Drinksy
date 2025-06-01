@@ -1,8 +1,10 @@
 package com.makelick.drinksy.core
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -15,18 +17,37 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val deepLinkViewModel: DeepLinkViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        handleDeepLink(intent)
+
         setContent {
             DrinksyTheme {
-                MainScreen()
+                MainScreen(deepLinkViewModel)
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleDeepLink(intent)
+    }
+
+    private fun handleDeepLink(intent: Intent?) {
+        val deepLinkData = DeepLinkHandler.parseDeepLink(intent)
+        if (deepLinkData != null) {
+            deepLinkViewModel.setPendingDeepLink(deepLinkData)
         }
     }
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(deepLinkViewModel: DeepLinkViewModel) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -52,7 +73,8 @@ fun MainScreen() {
     ) { innerPadding ->
         AppNavigation(
             navController = navController,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            deepLinkViewModel
         )
     }
 }

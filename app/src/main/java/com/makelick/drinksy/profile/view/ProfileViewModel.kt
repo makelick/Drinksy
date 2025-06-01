@@ -1,10 +1,10 @@
 package com.makelick.drinksy.profile.view
 
-import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import android.net.Uri
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.makelick.drinksy.profile.data.User
+import com.makelick.drinksy.login.data.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,12 +12,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor() : ViewModel() {
+class ProfileViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
-    // Available tastes to choose from
     val availableTastes = listOf(
         "Sweet", "Sour", "Bitter", "Spicy", "Fruity",
         "Strong", "Citrus", "Herbal", "Exotic", "Refreshing",
@@ -25,45 +26,42 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
     )
 
     init {
-        // Initialize with mock data
         loadUserProfile()
     }
 
     private fun loadUserProfile() {
-        val mockUser = User(
-            id = "user123",
-            name = "John Doe",
-            profilePictureUrl = "",
-            favoriteCocktails = emptyList(),
-            tastes = listOf("Sweet", "Fruity", "Citrus")
-        )
-
-        _uiState.value = ProfileUiState(
-            userId = mockUser.id,
-            username = mockUser.name,
-            profilePictureUrl = mockUser.profilePictureUrl,
-            selectedTastes = mockUser.tastes.toMutableList(),
-            isLoading = false
-        )
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            val user = authRepository.getCurrentUser()
+            if (user != null) {
+                val firebaseUser = authRepository.getUserFromFirestore(user.uid)
+                _uiState.value = ProfileUiState(
+                    userId = firebaseUser.id,
+                    username = firebaseUser.name,
+                    profilePictureUrl = firebaseUser.profilePictureUrl,
+                    selectedTastes = firebaseUser.tastes.toMutableList(),
+                    isLoading = false
+                )
+            } else {
+                _uiState.value = _uiState.value.copy(isLoading = false)
+            }
+        }
     }
 
     fun updateUsername(newName: String) {
         _uiState.value = _uiState.value.copy(username = newName)
-        // In a real app, you would update this to the backend
         viewModelScope.launch {
-            // Simulate API call
-            // userRepository.updateUsername(uiState.value.userId, newName)
+            authRepository.updateUsername(_uiState.value.userId, newName)
         }
     }
 
     fun updateProfilePicture(imageUri: Uri?) {
         if (imageUri != null) {
             _uiState.value = _uiState.value.copy(profilePictureUri = imageUri)
-            // In a real app, you would upload this to Firebase
             viewModelScope.launch {
-                // Simulate upload to Firebase
-                // val url = firebaseStorage.uploadProfilePicture(uiState.value.userId, imageUri)
-                // _uiState.value = _uiState.value.copy(profilePictureUrl = url)
+                val url = authRepository.uploadProfilePicture(_uiState.value.userId, imageUri)
+                authRepository.updatePictureUrl(_uiState.value.userId, url)
+                _uiState.value = _uiState.value.copy(profilePictureUrl = url)
             }
         }
     }
@@ -73,7 +71,9 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
         if (!currentTastes.contains(taste)) {
             currentTastes.add(taste)
             _uiState.value = _uiState.value.copy(selectedTastes = currentTastes)
-            // In a real app, you would update this to the backend
+            viewModelScope.launch {
+                authRepository.updateTastes(_uiState.value.userId, currentTastes)
+            }
         }
     }
 
@@ -81,7 +81,13 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
         val currentTastes = _uiState.value.selectedTastes.toMutableList()
         currentTastes.remove(taste)
         _uiState.value = _uiState.value.copy(selectedTastes = currentTastes)
-        // In a real app, you would update this to the backend
+        viewModelScope.launch {
+            authRepository.updateTastes(_uiState.value.userId, currentTastes)
+        }
+    }
+
+    fun signOut() {
+        authRepository.signOut()
     }
 }
 

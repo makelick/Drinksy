@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
@@ -43,10 +44,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeCocktailsScreen(
     navigateToCocktail: (String) -> Unit,
@@ -56,6 +59,7 @@ fun HomeCocktailsScreen(
     val cocktails by viewModel.cocktails.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isFiltersVisible by viewModel.isFiltersVisible.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
 
     Scaffold(
         topBar = {
@@ -77,56 +81,61 @@ fun HomeCocktailsScreen(
             }
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing),
+            onRefresh = { viewModel.refresh() }
         ) {
-            // Search bar
-            SearchBar(
-                query = searchQuery,
-                onQueryChange = { viewModel.updateSearchQuery(it) },
-                onSearch = { viewModel.searchCocktails() },
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            )
-
-            // Filters section - only shown when filters are visible
-            AnimatedVisibility(visible = isFiltersVisible) {
-                FiltersSection(
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                SearchBar(
+                    query = searchQuery,
+                    onQueryChange = { viewModel.updateSearchQuery(it) },
+                    onSearch = { viewModel.searchCocktails() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 )
-            }
 
-            // List of cocktails
-            if (cocktails.isEmpty()) {
-                EmptyState(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                )
-            } else {
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(cocktails) { cocktail ->
-                        CocktailCard(
-                            cocktail = cocktail,
-                            onFavoriteClick = { isFavorite ->
-                                viewModel.updateCocktailFavoriteStatus(cocktail.id, isFavorite)
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navigateToCocktail(cocktail.id)
-                                }
-                        )
+                AnimatedVisibility(visible = isFiltersVisible) {
+                    FiltersSection(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    )
+                }
+
+                if (cocktails.isEmpty()) {
+                    EmptyState(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(cocktails, key = { it.id }) { cocktail ->
+                            CocktailCard(
+                                cocktail = cocktail,
+                                onFavoriteClick = { isFavorite ->
+                                    viewModel.updateCocktailFavoriteStatus(
+                                        cocktail.id,
+                                        isFavorite
+                                    )
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        navigateToCocktail(cocktail.id)
+                                    }
+                            )
+                        }
                     }
                 }
             }
@@ -234,7 +243,6 @@ fun FiltersSection(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            // Category filters as chips
             Text(
                 text = "Categories:",
                 style = MaterialTheme.typography.bodyMedium,
@@ -266,7 +274,6 @@ fun FiltersSection(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Rating filter
             Text(
                 text = "Minimum rating:",
                 style = MaterialTheme.typography.bodyMedium,
@@ -280,7 +287,6 @@ fun FiltersSection(
                 steps = 4
             )
 
-            // Apply filters button
             Button(
                 onClick = { /* Apply filters */ },
                 modifier = Modifier
@@ -305,27 +311,9 @@ fun EmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = null,
-            modifier = Modifier
-                .size(80.dp)
-                .padding(bottom = 16.dp),
-            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-        )
-
-        Text(
-            text = "No cocktails found",
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center
-        )
-
-        Text(
-            text = "Try adjusting your search or filters",
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 8.dp)
+        CircularProgressIndicator(
+            modifier = Modifier.size(48.dp),
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

@@ -19,8 +19,6 @@ sealed class Screen(val route: String) {
     data object CreateList : Screen("create_list/{listId}") {
         fun createRoute(listId: String?) = "create_list/$listId"
     }
-    data object ShareList : Screen("share_list/{listId}") {
-        fun createRoute(listId: String) = "share_list/$listId"
-    }
     data object Profile : Screen("profile")
+    data object Favorites : Screen("favorites")
 }
