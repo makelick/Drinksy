@@ -353,7 +353,7 @@ fun LoginScreen(
                 }
             }
 
-            is AuthState.Authenticated -> { }
+            is AuthState.Authenticated -> {}
         }
     }
 }

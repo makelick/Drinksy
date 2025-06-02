@@ -34,13 +34,6 @@ class ListsViewModel @Inject constructor(
 
     fun searchLists() {
         // Implementation would call repository to search lists
-        isLoading.value = true
-        // Simulate API call
-        viewModelScope.launch {
-            delay(500)
-            // Update lists based on search
-            isLoading.value = false
-        }
     }
 
     fun toggleFilterVisibility() {
@@ -57,13 +50,6 @@ class ListsViewModel @Inject constructor(
 
     fun applyFilters() {
         // Implementation would apply filters and update list
-        isLoading.value = true
-        // Simulate API call
-        viewModelScope.launch {
-            delay(500)
-            // Update lists based on filters
-            isLoading.value = false
-        }
     }
 
     private fun fetchCocktailsLists() {

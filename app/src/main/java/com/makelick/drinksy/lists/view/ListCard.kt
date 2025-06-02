@@ -1,7 +1,15 @@
 package com.makelick.drinksy.lists.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -155,10 +163,12 @@ private fun CompositeImageGrid(cocktails: List<Cocktail>) {
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             )
         }
+
         cocktails.size == 1 -> {
             // Just show the single cocktail image
             SingleCocktailImage(cocktails[0])
         }
+
         cocktails.size < 4 -> {
             // Show a 2-image grid
             Row(modifier = Modifier.fillMaxSize()) {
@@ -170,12 +180,15 @@ private fun CompositeImageGrid(cocktails: List<Cocktail>) {
                 }
             }
         }
+
         else -> {
             // Show a 4-image grid
             Column(modifier = Modifier.fillMaxSize()) {
-                Row(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                ) {
                     Box(modifier = Modifier.weight(1f)) {
                         SingleCocktailImage(cocktails[0])
                     }
@@ -183,9 +196,11 @@ private fun CompositeImageGrid(cocktails: List<Cocktail>) {
                         SingleCocktailImage(cocktails[1])
                     }
                 }
-                Row(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                ) {
                     Box(modifier = Modifier.weight(1f)) {
                         SingleCocktailImage(cocktails[2])
                     }
@@ -278,61 +293,6 @@ fun CocktailListCardPreview() {
             CocktailListCard(
                 cocktailList = sampleList,
                 creatorName = "Cocktail Enthusiast",
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-    }
-}
-
-/**
- * Preview for CocktailListCard with Menu type
- */
-@Composable
-@Preview
-fun MenuCocktailListCardPreview() {
-    val sampleCocktails = listOf(
-        Cocktail(
-            id = "1",
-            name = "Mojito",
-            description = "Classic Cuban highball",
-            imageUrl = "https://images.immediate.co.uk/production/volatile/sites/30/2022/06/Tequila-sunrise-fb8b3ab.jpg",
-            ingredients = listOf("White rum", "Sugar", "Lime juice", "Soda water", "Mint"),
-            instructions = "Muddle mint leaves with sugar and lime juice...",
-            category = "Highball",
-            rating = 4.5f,
-            reviews = emptyList(),
-            isFavorite = false
-        ),
-        Cocktail(
-            id = "2",
-            name = "Margarita",
-            description = "A classic tequila cocktail",
-            imageUrl = "https://example.com/margarita.jpg",
-            ingredients = listOf("Tequila", "Triple sec", "Lime juice", "Salt"),
-            instructions = "Rub rim of glass with lime...",
-            category = "All Day Cocktail",
-            rating = 4.7f,
-            reviews = emptyList(),
-            isFavorite = true
-        )
-    )
-
-    val sampleMenuList = CocktailList(
-        id = "menu1",
-        name = "Beach Bar Menu",
-        imageUrl = "https://cdn.pixabay.com/photo/2023/10/28/06/40/wine-8346641_640.jpg", // With image URL
-        description = "Our special selection of signature drinks",
-        type = ListType.MENU,
-        cocktails = sampleCocktails,
-        creatorUser = "user123",
-        isPublic = true
-    )
-
-    MaterialTheme {
-        Surface {
-            CocktailListCard(
-                cocktailList = sampleMenuList,
-                creatorName = "Beach Paradise Bar",
                 modifier = Modifier.padding(16.dp)
             )
         }

@@ -24,6 +24,7 @@ playServicesAuth = "21.3.0"
 tensorflowLite = "2.14.0"
 tensorflowLiteSelectTfOps = "2.14.0"
 tensorflowLiteSupport = "0.4.4"
+detekt = "1.23.6"
 
 [libraries]
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanistSwiperefresh" }
@@ -72,3 +73,4 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gms-google-services = { id = "com.google.gms.google-services", version.ref = "gmsServices" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

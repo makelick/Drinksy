@@ -163,9 +163,7 @@ class CocktailListEditorViewModel @Inject constructor(
                     id = _listId.value.toString(),
                     name = _uiState.value.name,
                     description = _uiState.value.description,
-                    imageUrl = _uiState.value.imageUrl.ifEmpty {
-                        generateCollageUrl(_uiState.value.cocktailsWithPrice.map { it.cocktail })
-                    },
+                    imageUrl = _uiState.value.imageUrl,
                     type = _uiState.value.type,
                     cocktails = _uiState.value.cocktailsWithPrice.map { it.cocktail },
                     isPublic = _uiState.value.isPublic,
@@ -191,12 +189,6 @@ class CocktailListEditorViewModel @Inject constructor(
                 e.printStackTrace()
             }
         }
-    }
-
-    private fun generateCollageUrl(cocktails: List<Cocktail>): String {
-        // This would generate a collage from 1-4 cocktail images
-        // Implementation depends on your image processing service
-        return ""
     }
 
     fun clearError() {

@@ -129,9 +129,9 @@ class HomeCocktailsViewModel @Inject constructor(
         // Optionally implement search logic here
     }
 
-    fun toggleFavoriteStatus(cocktailId: String) {
-        viewModelScope.launch {
-
-        }
-    }
+//    fun toggleFavoriteStatus(cocktailId: String) {
+//        viewModelScope.launch {
+//
+//        }
+//    }
 }

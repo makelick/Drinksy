@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.gms.google.services)
+    alias(libs.plugins.detekt)
 }
 
 android {

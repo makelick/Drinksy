@@ -61,7 +61,7 @@ class FirebaseCocktailRepository @Inject constructor(
                 val imageRef = storage.reference
                     .child("$IMAGES_STORAGE_PATH/$imageId.jpg")
 
-                val uploadTask = imageRef.putFile(uri).await()
+                imageRef.putFile(uri).await()
                 val downloadUrl = imageRef.downloadUrl.await()
 
                 downloadUrl.toString()

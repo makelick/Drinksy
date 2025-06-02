@@ -153,25 +153,3 @@ fun RatingBar(
         }
     }
 }
-
-@Preview
-@Composable
-private fun CocktailCardPreview() {
-    val sampleCocktail = Cocktail(
-        id = "1",
-        name = "Mojito",
-        description = "A refreshing Cuban cocktail with rum, lime, mint, and sugar",
-        imageUrl = "https://www.thecocktaildb.com/images/media/drink/sxpcj71487603345.jpg",
-        ingredients = listOf("White rum", "Lime juice", "Sugar", "Mint", "Soda water"),
-        instructions = "Muddle mint leaves with sugar and lime juice. Add rum and ice, top with soda water.",
-        category = "Classics",
-        rating = 4.5f,
-        reviews = emptyList(),
-        isFavorite = true
-    )
-
-    CocktailCard(
-        cocktail = sampleCocktail,
-        onFavoriteClick = { }
-    )
-}

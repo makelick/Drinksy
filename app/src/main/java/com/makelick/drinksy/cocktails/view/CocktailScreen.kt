@@ -395,7 +395,7 @@ fun ActionButtons(
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(text = "Where")
+                Text(text = "Menus")
             }
         }
     }
@@ -567,39 +567,4 @@ fun RecipeBottomSheet(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun CocktailScreenPreview() {
-    val sampleCocktail = Cocktail(
-        id = "1",
-        name = "Mojito",
-        description = "A refreshing Cuban cocktail with rum, lime, mint, and sugar. Perfect for summer days and beach parties. This classic cocktail has a bright, tangy flavor with a hint of sweetness.",
-        imageUrl = "https://example.com/mojito.jpg",
-        ingredients = listOf(
-            "60ml white rum",
-            "30ml fresh lime juice",
-            "2 tsp sugar",
-            "8-10 mint leaves",
-            "Soda water",
-            "Crushed ice"
-        ),
-        instructions = "Muddle mint leaves with sugar and lime juice in a highball glass. Add rum and fill the glass with crushed ice. Top with soda water and stir gently. Garnish with a mint sprig and lime wheel.",
-        category = "Classic",
-        rating = 4.5f,
-        reviews = List(12) {
-            Review(
-                "", "", 0f, "", Date(System.currentTimeMillis())
-            )
-        },
-        isFavorite = true
-    )
-
-    CocktailContent(
-        cocktail = sampleCocktail,
-        onRecipeClick = {},
-        onReviewsClick = {},
-        onMapClick = {}
-    )
 }
